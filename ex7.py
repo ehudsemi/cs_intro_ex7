@@ -4,6 +4,7 @@ O = 'O'
 
 
 def get_int(prompt):
+    # Get integer input safely
     while True:
         try:
             return int(input(prompt))
@@ -12,10 +13,12 @@ def get_int(prompt):
 
 
 def init_board(rows, cols):
+    # Create empty board
     return [[EMPTY for _ in range(cols)] for _ in range(rows)]
 
 
 def print_board(board, tic_tac_toe=False):
+    # Print the board; add numbers for Connect N
     for row in board:
         print("|" + "|".join(row) + "|")
     if not tic_tac_toe:
@@ -23,15 +26,18 @@ def print_board(board, tic_tac_toe=False):
 
 
 def check_victory(board, row, col, token, n):
+    # Check if placing token at (row,col) wins
     rows, cols = len(board), len(board[0])
     directions = [(0,1), (1,0), (1,1), (1,-1)]
     for dr, dc in directions:
         count = 1
+        # Check forward
         r, c = row + dr, col + dc
         while 0 <= r < rows and 0 <= c < cols and board[r][c] == token:
             count += 1
             r += dr
             c += dc
+        # Check backward
         r, c = row - dr, col - dc
         while 0 <= r < rows and 0 <= c < cols and board[r][c] == token:
             count += 1
@@ -41,7 +47,9 @@ def check_victory(board, row, col, token, n):
             return True
     return False
 
+
 def play_tic_tac_toe():
+    # Play 3x3 Tic Tac Toe human vs human
     print("Tic Tac Toe (Human vs Human)")
     board = init_board(3, 3)
     print_board(board, tic_tac_toe=True)
@@ -65,6 +73,7 @@ def play_tic_tac_toe():
 
 
 def get_free_row(board, col):
+    # Return lowest empty row in column
     for r in range(len(board)-1, -1, -1):
         if board[r][col] == EMPTY:
             return r
@@ -72,11 +81,13 @@ def get_free_row(board, col):
 
 
 def is_column_full(board, col):
+    # Check if column is full
     return board[0][col] != EMPTY
 
 
 def play_connect_n(rows, cols):
-    # Determine CONNECT_N
+    # Play Connect N (human vs human/computer)
+    # Determine CONNECT_N based on board size
     if rows == 2 or cols == 2:
         connect_n = 2
     elif 4 <= rows <= 5 or 4 <= cols <= 5:
@@ -86,13 +97,11 @@ def play_connect_n(rows, cols):
     else:
         connect_n = 5
 
-    print(f"Connect Four - Or More [Or Less] ({rows} rows x {cols} cols, connect {connect_n})")
+    print(f"Connect Four - Or More [Or Less] ({rows}x{cols}, connect {connect_n})")
 
-    # Player types
-    print("Choose type for player 1: h - human, r - random/simple computer, s - strategic computer:", end=" ")
-    input("")  # just read input for grading purposes
-    print("Choose type for player 2: h - human, r - random/simple computer, s - strategic computer:", end=" ")
-    input("")
+    # Player types input skipped
+    input("Choose type for player 1: h/r/s: ")
+    input("Choose type for player 2: h/r/s: ")
     print("")
 
     board = init_board(rows, cols)
@@ -102,6 +111,7 @@ def play_connect_n(rows, cols):
     token = X
 
     while True:
+        # Player move
         print(f"Player {player} ({token}) turn.")
         while True:
             print(f"Enter column (1-{cols}):")
@@ -114,18 +124,18 @@ def play_connect_n(rows, cols):
         if check_victory(board, row, col, token, connect_n):
             print(f"Player {player} ({token}) wins!")
             return
+        # Switch player
         player = 2 if player == 1 else 1
         token = O if token == X else X
 
 
-
 def main():
+    # Main program: ask board size and start game
     print("Enter number of rows")
     rows = get_int("")
     print("Enter number of columns")
     cols = get_int("")
 
-    # Validate input
     if rows < 2 or rows > 100 or cols < 2 or cols > 100:
         return
 
